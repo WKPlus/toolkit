@@ -1,4 +1,8 @@
 #!/bin/bash
+#Author: qifa.zhao@dianping.com
+#Date: 2013-07-18
+
+ports=(22 60022)
 
 #find host in a scp command
 for param in "$@"
@@ -11,7 +15,6 @@ done
 
 if [[ "${host}" != "" ]];then
     #test port in list one by one
-    ports=(22 60022)
     for p in ${ports[@]}
     do 
         if nc -z -w3 ${host} ${p} >/dev/null; then

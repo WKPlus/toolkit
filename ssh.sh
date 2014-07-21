@@ -1,18 +1,25 @@
 #!/bin/bash 
-
-host=${1#*@}
+#Author: qifa.zhao@dianping.com
+#Date: 2013-07-18
 
 ports=(22 60022)
-for p in ${ports[@]}
-do 
-    if nc -z -w3 ${host} ${p} >/dev/null; then
-        port=${p}
-        break
-    fi
-done
 
-if [[ "$port" != "" ]];then
-    ssh -p ${port} $@
-else 
-    ssh $@
+if echo "$1" |grep "@" >/dev/null; then
+    host=${1#*@}
+
+    for p in ${ports[@]}
+    do 
+        if nc -z -w3 ${host} ${p} >/dev/null; then
+            port=${p}
+            break
+        fi
+    done
+
+    if [[ "$port" != "" ]];then
+        \ssh -p ${port} $@
+    else 
+        \ssh $@
+    fi
+else
+    \ssh $@
 fi
