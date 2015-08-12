@@ -78,9 +78,9 @@ function main
         ssh-keygen -t rsa -f $SSH_HOME_DIR/id_rsa -N ""
     fi
 
+    >$TMP_FILE
     wise_ssh $password scp -P $port $user@$host:'\$HOME/.ssh/authorized_keys' $TMP_FILE
 
-    touch $TMP_FILE
     chmod 644 $TMP_FILE
     sed -i "/$USER@$HOSTNAME/d" $TMP_FILE
     cat $SSH_HOME_DIR/id_rsa.pub >> $TMP_FILE
