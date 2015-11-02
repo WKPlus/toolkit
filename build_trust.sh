@@ -1,5 +1,5 @@
 #!/bin/bash
-#Author: qifa.zhao@dianping.com
+#Author: WKPlus
 #Date: 2013-08-20
 
 #build trust工具，适用于CentOS机器间建立信任
@@ -11,24 +11,6 @@ function help
 {
     echo "Usage: $0 host user password [port,default 22]"
     exit 0
-}
-
-#install sshpass
-function install_sshpass
-{
-    which sshpass
-    if [ $? -eq 0 ];then
-        echo "sshpass installed already, no need to install again."
-    else
-        echo "Install sshpass begin ..."
-        yes|yum install sshpass
-        if [ $? -ne 0 ];then
-        	echo "Install sshpass succeed!"
-        else
-        	echo "Install sshpass failed! No need to continue, exit!"
-        	exit 1
-        fi
-    fi
 }
 
 function install_expect
@@ -66,10 +48,19 @@ function main
     port=${4:-22}
     ssh -p $port -o BatchMode=yes -o StrictHostKeyChecking=no $user@$host "exit"
     if [ $? -eq 0 ];then
-        echo "Trusted already, no need to do it again."
+        echo "Trusted already, no need to run."
         return 0
     else
         echo "Will build trust between localhost and $host with user/password/port as $user/$password/$port ..."
+    fi
+
+    result=$(wise_ssh $password ssh -p $port -o NumberOfPasswordPrompts=1 $user@$host "exit")
+    echo $result|grep "Permission denied" >/dev/null 2>&1
+    if [ $? == 0 ];then
+        echo "Password validation failed, exit."
+        return 1
+    else
+        echo "Password validation passed, continue ..."
     fi
     
     install_expect
