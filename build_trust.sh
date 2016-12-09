@@ -17,9 +17,9 @@ function install_expect
 {
     which expect && return 0
     host=$(lsb_release -i|awk '{print $3}')
-    if [ "${host}" -eq "CentOS" ];then
+    if [[ "${host}" -eq "CentOS" ]];then
         yum -y install expect #TODO: install expect for other system
-    elif [ "${host}" -eq "Ubuntu" ];then
+    elif [[ "${host}" -eq "Ubuntu" ]];then
         apt-get install expect
     else
         echo "Unsupported operating system."
@@ -39,7 +39,7 @@ function wise_ssh
 
 function main
 {
-    if [ $# -lt 2 ];then
+    if [[ $# -lt 2 ]];then
         help $0
     fi
     host=${1}
@@ -47,7 +47,7 @@ function main
     password=${3}
     port=${4:-22}
     ssh -p $port -o BatchMode=yes -o StrictHostKeyChecking=no $user@$host "exit"
-    if [ $? -eq 0 ];then
+    if [[ $? -eq 0 ]];then
         echo "Trusted already, no need to run."
         return 0
     else
@@ -56,7 +56,7 @@ function main
 
     result=$(wise_ssh $password ssh -p $port -o NumberOfPasswordPrompts=1 $user@$host "exit")
     echo $result|grep "Permission denied" >/dev/null 2>&1
-    if [ $? == 0 ];then
+    if [[ $? == 0 ]];then
         echo "Password validation failed, exit."
         return 1
     else
@@ -65,7 +65,7 @@ function main
     
     install_expect
 
-    if [ ! -f $SSH_HOME_DIR/id_rsa.pub ];then
+    if [[ ! -f $SSH_HOME_DIR/id_rsa.pub ]];then
         ssh-keygen -t rsa -f $SSH_HOME_DIR/id_rsa -N ""
     fi
 
@@ -80,7 +80,7 @@ function main
     wise_ssh $password scp -P $port $TMP_FILE $user@$host:'\$HOME/.ssh/authorized_keys'
     wise_ssh $password ssh -p $port $user@$host 'chmod 644 \$HOME/.ssh/authorized_keys'
     ssh -p $port -o BatchMode=yes -o StrictHostKeyChecking=no $user@$host "exit"
-    if [ $? -eq 0 ];then
+    if [[ $? -eq 0 ]];then
         echo "Build trust succeed!"
         return 0
     else
