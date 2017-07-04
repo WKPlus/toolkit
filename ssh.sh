@@ -9,7 +9,7 @@ if echo "$1" |grep "@" >/dev/null; then
 
     for p in ${ports[@]}
     do 
-        if nc -z -w3 ${host} ${p} >/dev/null; then
+        if nc -z -G 3 ${host} ${p} >/dev/null 2>&1; then
             port=${p}
             break
         fi
