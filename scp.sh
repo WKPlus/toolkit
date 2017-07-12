@@ -1,5 +1,4 @@
 #!/bin/bash
-#Author: qifa.zhao@dianping.com
 #Date: 2013-07-18
 
 ports=(22 60022)
